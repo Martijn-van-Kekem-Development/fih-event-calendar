@@ -1,6 +1,7 @@
 import { Competition } from "../Objects/Competition.js";
 import { Match } from "../Objects/Match.js";
 import { ICS } from "../ICS.js";
+import { Official } from "../Objects/Official.js";
 
 export abstract class Fetcher {
     /**
@@ -93,8 +94,11 @@ export abstract class Fetcher {
     /**
      * Fetch the matches by a competition.
      * @param competition The competition.
+     * @param matchOfficials The officials for the matches (optional).
      */
-    protected abstract fetchMatches(competition: Competition):
+    protected abstract fetchMatches(
+        competition: Competition,
+        matchOfficials?: Map<string, Official[]>):
         Promise<Map<string, Match>>;
 
     /**

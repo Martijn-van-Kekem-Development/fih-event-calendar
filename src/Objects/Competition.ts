@@ -1,6 +1,7 @@
 import { Match } from "./Match.js";
 import { Abbreviations } from "../Utils/Abbreviations.js";
 import { Fetcher } from "../Fetchers/Fetcher.js";
+import { Official } from "./Official.js";
 
 export class Competition {
     /**
@@ -141,5 +142,15 @@ export class Competition {
      */
     public getIndex(): number {
         return this.index;
+    }
+
+    private officials: Official[] = [];
+
+    public setOfficials(officials: Official[]) {
+        this.officials = officials;
+    }
+
+    public getOfficials(): Official[] {
+        return this.officials;
     }
 }

@@ -128,7 +128,35 @@ export class ICS {
         const content: string[] = [];
 
         content.push("BEGIN:VEVENT");
-        content.push(...Object.entries(match.getICSAttributes()).map(
+        const attributes = match.getICSAttributes();
+
+        // Add officials to the description
+        const officials = match.getOfficials();
+        const officialsDescription: string[] = [];
+
+        officials.forEach(official => {
+            if (official.getRole() === "Umpire") {
+                officialsDescription
+                .push(`Umpire: ${official.getName()}`);
+            } else if (official.getRole() === "Scoring/Timing Official") {
+                officialsDescription
+                    .push(`Scoring/Timing Official: ${official.getName()}`);
+            } else if (official.getRole() === "Technical Officer") {
+                officialsDescription
+                    .push(`Technical Official: ${official.getName()}`);
+            }
+        });
+
+        // Join the officials description, ensuring to skip empty roles
+        attributes.DESCRIPTION +=
+            `\n\nOfficials:\n${officialsDescription.join("\n")}`;
+        attributes["X-ALT-DESC;FMTTYPE=text/html"] +=
+            `<br><br>Officials:<br>${officialsDescription.join("<br>")}`;
+
+        // Remove line breaks from DESCRIPTION
+        attributes.DESCRIPTION = attributes.DESCRIPTION.replace(/\n/g, " ");
+
+        content.push(...Object.entries(attributes).map(
             ([key, val]) => `${key}:${val}`));
         content.push("END:VEVENT");
 
@@ -151,7 +179,7 @@ export class ICS {
 
             // Do for every line that is too long.
             while (line.length >= 75) {
-                parts.push(" "  + line.slice(0, 73));
+                parts.push(" " + line.slice(0, 73));
                 line = line.slice(73);
             }
 
@@ -183,5 +211,4 @@ export interface Metadata {
     index?: number,
     path?: string,
     count?: number
-
 }

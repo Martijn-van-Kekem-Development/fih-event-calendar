@@ -5,6 +5,7 @@ import { TMSCompetitionFetcher } from "./TMSCompetitionFetcher.js";
 import { TMSMatchFetcher } from "./TMSMatchFetcher.js";
 import { ICSCreator } from "../../Utils/ICSCreator.js";
 import { Gender } from "../../Objects/Gender.js";
+import { Official } from "../../Objects/Official.js";
 
 export class TMSFetcher extends Fetcher {
     /**
@@ -83,8 +84,12 @@ export class TMSFetcher extends Fetcher {
         this.log("info", "Fetching matches and creating competition files.");
 
         for (const competition of competitions.values()) {
-            // Fetch match for every competition
-            const matchPromise = this.fetchMatches(competition);
+            // Fetch officials for the competition
+            const matchOfficials = await this.competitionFetcher
+                .fetchOfficials(competition.getID());
+
+            // Fetch matches for the competition
+            const matchPromise = this.fetchMatches(competition, matchOfficials);
             matchPromise.then(result => {
                 competition.getMatches().push(...result.values());
                 return ICSCreator.createCompetitionICS(competition);
@@ -130,8 +135,10 @@ export class TMSFetcher extends Fetcher {
     /**
      * @override
      */
-    async fetchMatches(competition: Competition): Promise<Map<string, Match>> {
-        return await this.matchFetcher.fetch(competition);
+    async fetchMatches(
+        competition: Competition,
+        matchOfficials: Map<string, Official[]>): Promise<Map<string, Match>> {
+            return await this.matchFetcher.fetch(competition, matchOfficials);
     }
 
     /**

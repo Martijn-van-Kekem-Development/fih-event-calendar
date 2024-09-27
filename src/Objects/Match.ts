@@ -4,6 +4,7 @@ import { Abbreviations } from "../Utils/Abbreviations.js";
 import { DateHelper } from "../Utils/DateHelper.js";
 import { Moment } from "moment-timezone";
 import { Gender, getFullGender } from "./Gender.js";
+import { Official } from "./Official.js";
 
 export class Match {
     /**
@@ -83,6 +84,12 @@ export class Match {
      * @private
      */
     private id: string | null = null;
+
+    /**
+     * The officials for this match.
+     * @private
+     */
+    private officials: Official[] = [];
 
     /**
      * Set the home team for this match.
@@ -198,6 +205,14 @@ export class Match {
      */
     public setType(type: string) {
         this.type = type;
+    }
+
+    /**
+     * Set the officials for this match.
+     * @param officials The officials.
+     */
+    public setOfficials(officials: Official[]) {
+        this.officials = officials;
     }
 
     /**
@@ -399,6 +414,13 @@ export class Match {
      */
     public getMatchID(): string {
         return this.id;
+    }
+
+    /**
+     * Get the officials for this match.
+     */
+    public getOfficials(): Official[] {
+        return this.officials;
     }
 }
 

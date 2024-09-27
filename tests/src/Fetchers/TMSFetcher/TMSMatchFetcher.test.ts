@@ -1,6 +1,7 @@
 import { test, describe, expect } from "vitest";
 import { TMSMatchFetcher } from "../../../../src/Fetchers/TMSFetcher/TMSMatchFetcher.js";
 import { Match } from "../../../../src/Objects/Match.js";
+import { Official } from "../../../../src/Objects/Official.js";
 
 interface parseTitleTest {
     in: string,
@@ -53,6 +54,24 @@ describe("TMSMatchFetcher tests", () => {
                 expect(() => runParseTitleTest({ in: "Random string" }))
                     .toThrowError();
             });
+        });
+    });
+
+    describe("Officials", () => {
+        test("Assigning officials to a match", () => {
+            const match = new Match();
+            const official1 = new Official("1", "John Doe", "Umpire", "USA");
+            const official2 = new Official("2", "Jane Smith",
+                "Scoring Official", "Canada");
+
+            match.setOfficials([official1, official2]);
+
+            const officials = match.getOfficials();
+            expect(officials.length).toBe(2);
+            expect(officials[0].getName()).toBe("John Doe");
+            expect(officials[0].getRole()).toBe("Umpire");
+            expect(officials[1].getName()).toBe("Jane Smith");
+            expect(officials[1].getRole()).toBe("Scoring Official");
         });
     });
 });
